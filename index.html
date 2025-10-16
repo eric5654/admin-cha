@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Admin — Chá de Cozinha</title>
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #FFEDE8, #FFF5E0);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      color: #333;
+    }
+
+    .login-container {
+      background: #fffaf0;
+      padding: 40px 30px;
+      border-radius: 15px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    h1 {
+      color: #D2691E;
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      font-size: 1em;
+      box-sizing: border-box;
+    }
+
+    button {
+      background-color: #FF8C00;
+      color: white;
+      border: none;
+      padding: 12px;
+      width: 100%;
+      border-radius: 10px;
+      font-size: 1em;
+      cursor: pointer;
+      margin-top: 15px;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background-color: #FF7F50;
+    }
+
+    .error {
+      color: #FF4500;
+      font-size: 0.9em;
+      margin-top: 10px;
+    }
+
+    /* input “fantasma” escondido para enganar o navegador */
+    .hidden-input {
+      position: absolute;
+      top: -1000px;
+      left: -1000px;
+      opacity: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-container">
+    <h1>Login Admin 🌅</h1>
+
+    <!-- Inputs fantasmas -->
+    <input type="text" class="hidden-input" autocomplete="username">
+    <input type="password" class="hidden-input" autocomplete="current-password">
+
+    <form autocomplete="off" onsubmit="return false;">
+      <input type="text" id="username" placeholder="Usuário" autocomplete="off">
+      <input type="password" id="password" placeholder="Senha" autocomplete="off">
+      <button onclick="login()">Entrar</button>
+      <div id="error" class="error"></div>
+    </form>
+  </div>
+
+  <script>
+    // Limpa os campos mesmo com preenchimento automático do navegador
+    window.addEventListener('load', () => {
+      const username = document.getElementById('username');
+      const password = document.getElementById('password');
+
+      username.value = '';
+      password.value = '';
+
+      // Limpa a mensagem de erro
+      document.getElementById('error').textContent = '';
+
+      // Também limpa novamente após pequeno delay, para evitar autofill tardio
+      setTimeout(() => {
+        username.value = '';
+        password.value = '';
+      }, 50);
+    });
+
+    // Limpa mensagem de erro ao digitar
+    document.getElementById('username').addEventListener('input', () => {
+      document.getElementById('error').textContent = '';
+    });
+    document.getElementById('password').addEventListener('input', () => {
+      document.getElementById('error').textContent = '';
+    });
+
+    function login() {
+      const user = document.getElementById('username').value.trim();
+      const pass = document.getElementById('password').value.trim();
+      const errorDiv = document.getElementById('error');
+
+      const usuarioAdmin = {user: "admin", pass: "ericemarta"};
+
+      if(user === usuarioAdmin.user && pass === usuarioAdmin.pass){
+        window.location.href = "admin.html";
+      } else {
+        errorDiv.textContent = "Usuário ou senha incorretos!";
+      }
+    }
+  </script>
+
+</body>
+</html>

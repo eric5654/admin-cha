@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Painel do Administrador — Chá de Cozinha</title>
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #FFEDE8, #FFF5E0); /* tons suaves do nascer do sol */
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      color: #333;
+    }
+.botoes-container {
+  display: flex;
+  gap: 15px; /* espaço entre os botões */
+  justify-content: center; /* centraliza horizontalmente */
+  margin-top: 15px;
+  flex-wrap: wrap; /* permite quebra em telas pequenas */
+}
+
+.botoes-container button,
+.botoes-container a {
+  flex: 1; /* faz os botões ocuparem o mesmo tamanho */
+  text-align: center;
+}
+
+    h1 {
+      color: #D2691E;
+      margin-bottom: 20px;
+      font-size: 2em;
+      text-align: center;
+    }
+
+    .accordion {
+      width: 100%;
+      max-width: 900px;
+      background: #fffaf0;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+
+    .accordion-header {
+      padding: 15px 20px;
+      background-color: #FFDAB9;
+      cursor: pointer;
+      font-size: 1.2em;
+      font-weight: bold;
+      border-bottom: 1px solid #FFE4C4;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.3s;
+    }
+
+    .accordion-header:hover {
+      background-color: #FFE4C4;
+    }
+
+    .accordion-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-out;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 1em;
+    }
+
+    th, td {
+      border: 1px solid #FFDAB9;
+      padding: 10px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #FFE4B5;
+      color: #8B4513;
+    }
+
+    tr:nth-child(even) {
+      background-color: #FFF5E0;
+    }
+
+    .voltar, .reset-btn {
+      margin-top: 15px;
+      text-decoration: none;
+      color: #fff;
+      background-color: #FF8C00;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 1em;
+      transition: background 0.3s;
+      text-align: center;
+      border: none;
+      cursor: pointer;
+    }
+
+    .voltar:hover, .reset-btn:hover {
+      background-color: #FF7F50;
+    }
+
+    @media (max-width: 600px) {
+      table, th, td {
+        font-size: 0.9em;
+      }
+      .accordion-header {
+        font-size: 1em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Painel do Administrador 🌅</h1>
+
+
+  <!-- Accordion: Presentes Assinados -->
+  <div class="accordion">
+    <div class="accordion-header">Presentes Assinados ▾</div>
+    <div class="accordion-content">
+      <table id="tabelaAssinados">
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Presente</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Accordion: Presentes Faltantes -->
+  <div class="accordion">
+    <div class="accordion-header">Presentes Ainda Não Assinados ▾</div>
+    <div class="accordion-content">
+      <table id="tabelaFaltantes">
+        <thead>
+          <tr>
+            <th>Presente</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+ <div class="botoes-container">
+  <button class="reset-btn" onclick="resetarLista()">Limpar todos os presentes ⚠️</button>
+  <a href="index.html" class="voltar">Voltar à Página Principal</a>
+</div>
+
+  
+
+  <script>
+    // Dados de exemplo (mesma lista usada no index.html)
+    const presentes = [
+      "Panela de pressão",
+      "Jogo de copos",
+      "Toalha de mesa",
+      "Travessa de vidro",
+      "Liquidificador",
+      "Assadeira",
+      "Conjunto de talheres",
+      "Forma de bolo",
+      "Jogo de pratos",
+      "Jogo de lençol"
+    ];
+
+    const assinaturas = JSON.parse(localStorage.getItem("assinaturas")) || [];
+
+    const tabelaAssinados = document.querySelector("#tabelaAssinados tbody");
+    const tabelaFaltantes = document.querySelector("#tabelaFaltantes tbody");
+
+    // Preenche assinados
+    assinaturas.forEach(({ nome, presente }) => {
+      const linha = document.createElement("tr");
+      linha.innerHTML = `<td>${nome}</td><td>${presente}</td>`;
+      tabelaAssinados.appendChild(linha);
+    });
+
+    // Preenche faltantes
+    const presentesAssinados = assinaturas.map(a => a.presente);
+    const presentesFaltantes = presentes.filter(p => !presentesAssinados.includes(p));
+
+    presentesFaltantes.forEach(presente => {
+      const linha = document.createElement("tr");
+      linha.innerHTML = `<td>${presente}</td>`;
+      tabelaFaltantes.appendChild(linha);
+    });
+
+    // Accordion toggle
+    const accHeaders = document.querySelectorAll(".accordion-header");
+    accHeaders.forEach(header => {
+      header.addEventListener("click", () => {
+        const content = header.nextElementSibling;
+        const isOpen = content.style.maxHeight && content.style.maxHeight !== "0px";
+        // Fecha todas
+        document.querySelectorAll(".accordion-content").forEach(c => c.style.maxHeight = null);
+        // Abre a clicada se estava fechada
+        if(!isOpen) content.style.maxHeight = content.scrollHeight + "px";
+      });
+    });
+
+    function resetarLista() {
+      if (confirm("Tem certeza que deseja limpar toda a lista de presentes?")) {
+        localStorage.removeItem("assinaturas");
+        alert("Lista limpa com sucesso!");
+        location.reload();
+      }
+    }
+  </script>
+</body>
+</html>
